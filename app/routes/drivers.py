@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from app.extensions import db
-from app.models.driver import Driver
 from app.models.enums import DriverStatus
 from datetime import datetime
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
+from app.models.driver import Driver
 
 drivers_bp = Blueprint("drivers", __name__, url_prefix="/drivers")
 
@@ -17,6 +19,7 @@ def list_drivers():
 
 @drivers_bp.route("/create", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER)
 def create_driver():
     if request.method == "POST":
         name = request.form["name"]

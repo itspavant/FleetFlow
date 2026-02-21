@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 from flask_login import login_required
 from app.models.maintenance import MaintenanceLog
 from app.models.vehicle import Vehicle
@@ -6,6 +8,8 @@ from app.models.enums import VehicleStatus, MaintenanceStatus
 from app.services.maintenance_service import MaintenanceService
 from app.services.exceptions import InvalidStateTransitionError
 from app.extensions import db
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 
 maintenance_bp = Blueprint("maintenance", __name__, url_prefix="/maintenance")
 
@@ -19,6 +23,7 @@ def list_maintenance():
 
 @maintenance_bp.route("/create", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.SAFETY_OFFICER)
 def create_maintenance():
     vehicles = Vehicle.query.filter(
         Vehicle.status == VehicleStatus.AVAILABLE
@@ -48,6 +53,7 @@ def create_maintenance():
 
 @maintenance_bp.route("/complete/<int:maintenance_id>")
 @login_required
+@role_required(UserRole.MANAGER)
 def complete_maintenance(maintenance_id):
     try:
         MaintenanceService.complete_maintenance(maintenance_id)
@@ -60,6 +66,7 @@ def complete_maintenance(maintenance_id):
 
 @maintenance_bp.route("/edit/<int:maintenance_id>", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.SAFETY_OFFICER)
 def edit_maintenance(maintenance_id):
     log = MaintenanceLog.query.get_or_404(maintenance_id)
 

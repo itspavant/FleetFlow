@@ -1,13 +1,17 @@
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 from flask import Blueprint, render_template
 from flask_login import login_required
 from app.services.analytics_service import AnalyticsService
 from app.models.vehicle import Vehicle
+
 
 analytics_bp = Blueprint("analytics", __name__, url_prefix="/analytics")
 
 
 @analytics_bp.route("/")
 @login_required
+@role_required(UserRole.MANAGER, UserRole.ANALYST)
 def view_analytics():
     total_revenue = AnalyticsService.total_revenue()
     total_fuel = AnalyticsService.total_fuel_cost()

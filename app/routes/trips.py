@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 from flask_login import login_required
 from app.extensions import db
 from app.models.trip import Trip
@@ -7,6 +9,7 @@ from app.models.driver import Driver
 from app.models.enums import TripStatus, VehicleStatus, DriverStatus
 from app.services.trip_service import TripService
 from app.services.exceptions import TripAssignmentError
+
 
 trips_bp = Blueprint("trips", __name__, url_prefix="/trips")
 
@@ -23,6 +26,7 @@ def list_trips():
 
 @trips_bp.route("/create", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def create_trip():
     vehicles = Vehicle.query.filter(
         Vehicle.status == VehicleStatus.AVAILABLE
@@ -65,6 +69,7 @@ def create_trip():
 
 @trips_bp.route("/dispatch/<int:trip_id>")
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def dispatch_trip(trip_id):
     try:
         TripService.dispatch_trip(trip_id)
@@ -76,6 +81,7 @@ def dispatch_trip(trip_id):
 
 @trips_bp.route("/cancel/<int:trip_id>")
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def cancel_trip(trip_id):
     trip = Trip.query.get_or_404(trip_id)
 
@@ -92,6 +98,7 @@ def cancel_trip(trip_id):
 
 @trips_bp.route("/complete/<int:trip_id>", methods=["POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def complete_trip(trip_id):
     end_odometer = float(request.form["end_odometer"])
     try:
@@ -104,6 +111,7 @@ def complete_trip(trip_id):
 
 @trips_bp.route("/edit/<int:trip_id>", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def edit_trip(trip_id):
     trip = Trip.query.get_or_404(trip_id)
 

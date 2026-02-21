@@ -3,6 +3,8 @@ from flask_login import login_required
 from app.extensions import db
 from app.models.vehicle import Vehicle
 from app.models.enums import VehicleStatus, VehicleType
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 
 vehicles_bp = Blueprint("vehicles", __name__, url_prefix="/vehicles")
 
@@ -16,6 +18,7 @@ def list_vehicles():
 
 @vehicles_bp.route("/create", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER)
 def create_vehicle():
     if request.method == "POST":
         vehicle_type = request.form["vehicle_type"]
@@ -51,6 +54,7 @@ def create_vehicle():
 
 @vehicles_bp.route("/edit/<int:vehicle_id>", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER)
 def edit_vehicle(vehicle_id):
     vehicle = Vehicle.query.get_or_404(vehicle_id)
 
@@ -70,6 +74,7 @@ def edit_vehicle(vehicle_id):
 
 @vehicles_bp.route("/retire/<int:vehicle_id>")
 @login_required
+@role_required(UserRole.MANAGER)
 def retire_vehicle(vehicle_id):
     vehicle = Vehicle.query.get_or_404(vehicle_id)
 

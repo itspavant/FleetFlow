@@ -1,15 +1,19 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 from flask_login import login_required
 from app.extensions import db
 from app.models.fuel import FuelLog
 from app.models.trip import Trip
 from datetime import datetime
 
+
 fuel_bp = Blueprint("fuel", __name__, url_prefix="/fuel")
 
 
 @fuel_bp.route("/add/<int:trip_id>", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def add_fuel(trip_id):
     trip = Trip.query.get_or_404(trip_id)
 
@@ -46,6 +50,7 @@ def view_fuel(trip_id):
 
 @fuel_bp.route("/edit/<int:fuel_id>", methods=["GET", "POST"])
 @login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def edit_fuel(fuel_id):
     fuel = FuelLog.query.get_or_404(fuel_id)
 
@@ -63,6 +68,7 @@ def edit_fuel(fuel_id):
 
 @fuel_bp.route("/delete/<int:fuel_id>")
 @login_required
+@role_required(UserRole.MANAGER)
 def delete_fuel(fuel_id):
     fuel = FuelLog.query.get_or_404(fuel_id)
     trip_id = fuel.trip_id
