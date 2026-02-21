@@ -1,5 +1,12 @@
 from flask import Flask
 from .extensions import db, login_manager, migrate
+from app.models.user import User
+from app.extensions import login_manager
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def create_app():
     app = Flask(__name__)
@@ -11,8 +18,7 @@ def create_app():
 
     login_manager.login_view = "auth.login"
 
-    # Register blueprints (we’ll add later)
-    from .routes.auth import auth_bp
-    app.register_blueprint(auth_bp)
+    # Import models so migrations detect them
+    from app.models import user, vehicle, driver
 
     return app
