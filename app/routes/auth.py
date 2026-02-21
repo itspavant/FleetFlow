@@ -52,10 +52,11 @@ def login():
     return render_template("login.html")
 
 
+from flask import session
+
 @auth_bp.route("/logout")
 @login_required
 def logout():
-    from flask_login import logout_user
     logout_user()
-    flash("Logged out successfully.")
+    session.pop('_flashes', None)   # Clear any old flash messages
     return redirect(url_for("auth.login"))

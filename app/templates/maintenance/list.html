@@ -43,7 +43,9 @@
             <th>Description</th>
             <th>Cost</th>
             <th>Status</th>
+            {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
             <th>Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>

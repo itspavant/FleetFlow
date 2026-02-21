@@ -1,24 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 class="mb-4">Reports & Analytics</h2>
+<h2 class="mb-4">Operational Analytics & Financial Reports</h2>
 
+<!-- KPI Cards -->
 <div class="row mb-4">
 
     <div class="col-md-4">
         <div class="card shadow-sm text-center">
             <div class="card-body">
-                <h6>Total Revenue</h6>
-                <h3 class="text-success">₹ {{ total_revenue }}</h3>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
                 <h6>Total Fuel Cost</h6>
-                <h3 class="text-danger">₹ {{ total_fuel_cost }}</h3>
+                <h4>₹ {{ total_fuel }}</h4>
             </div>
         </div>
     </div>
@@ -27,38 +19,95 @@
         <div class="card shadow-sm text-center">
             <div class="card-body">
                 <h6>Fleet ROI</h6>
-                <h3 class="text-primary">{{ fleet_roi }}%</h3>
+                <h4>{{ roi }} %</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Total Revenue</h6>
+                <h4>₹ {{ total_revenue }}</h4>
             </div>
         </div>
     </div>
 
 </div>
 
-<!-- Revenue vs Cost Chart -->
-<div class="card shadow-sm">
-    <div class="card-header">
-        Revenue vs Cost
+<!-- Two Small Charts -->
+<div class="row mb-4">
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Revenue vs Cost</h6>
+                <canvas id="revenueChart" height="140"></canvas>
+            </div>
+        </div>
     </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Top 5 Costliest Trips</h6>
+                <canvas id="topTripsChart" height="140"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Monthly Financial Summary -->
+<div class="card shadow-sm">
     <div class="card-body">
-        <canvas id="financeChart"></canvas>
+        <h5 class="mb-3">Financial Summary of Current Month</h5>
+
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Revenue</th>
+                    <th>Fuel Cost</th>
+                    <th>Misc Expense</th>
+                    <th>Net Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>₹ {{ monthly_revenue }}</td>
+                    <td>₹ {{ monthly_fuel }}</td>
+                    <td>₹ {{ monthly_misc }}</td>
+                    <td><strong>₹ {{ monthly_profit }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const ctx = document.getElementById('financeChart');
 
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Revenue', 'Fuel Cost'],
-        datasets: [{
-            label: 'Amount',
-            data: [{{ total_revenue }}, {{ total_fuel_cost }}],
-            backgroundColor: ['#198754', '#dc3545']
-        }]
-    }
-});
+<script>
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels | tojson }},
+            datasets: [{
+                data: {{ chart_values | tojson }},
+                backgroundColor: ['#198754', '#dc3545']
+            }]
+        }
+    });
+
+    new Chart(document.getElementById('topTripsChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ top_labels | tojson }},
+            datasets: [{
+                data: {{ top_values | tojson }},
+                backgroundColor: '#0d6efd'
+            }]
+        }
+    });
 </script>
 
 {% endblock %}
