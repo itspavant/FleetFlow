@@ -32,3 +32,9 @@ class TripStatus(enum.Enum):
 class MaintenanceStatus(enum.Enum):
     OPEN = "Open"
     COMPLETED = "Completed"
+
+
+class VehicleType(enum.Enum):
+    TRUCK = "Truck"
+    VAN = "Van"
+    BIKE = "Bike"

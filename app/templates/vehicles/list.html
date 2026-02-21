@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Vehicles</h2>
+    <a href="{{ url_for('vehicles.create_vehicle') }}"
+       class="btn btn-primary">
+       + Add Vehicle
+    </a>
+</div>
+
+<table class="table table-hover mt-3">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Plate</th>
+            <th>Capacity</th>
+            <th>Odometer</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for v in vehicles %}
+        <tr>
+            <td>{{ v.vehicle_type.value }}</td>
+            <td>{{ v.model }}</td>
+            <td>{{ v.year }}</td>
+            <td>{{ v.license_plate }}</td>
+            <td>{{ v.max_capacity }}</td>
+            <td>{{ v.odometer }}</td>
+            <td>
+                {% if v.status.value == "Available" %}
+                    <span class="badge bg-success">
+                        {{ v.status.value }}
+                    </span>
+                {% elif v.status.value == "OnTrip" %}
+                    <span class="badge bg-primary">
+                        {{ v.status.value }}
+                    </span>
+                {% elif v.status.value == "InShop" %}
+                    <span class="badge bg-warning text-dark">
+                        {{ v.status.value }}
+                    </span>
+                {% else %}
+                    <span class="badge bg-danger">
+                        {{ v.status.value }}
+                    </span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('vehicles.edit_vehicle', vehicle_id=v.id) }}"
+                class="btn btn-sm btn-warning">
+                    Edit
+                </a>
+
+                {% if v.status.value != "Retired" %}
+                    <a href="{{ url_for('vehicles.retire_vehicle', vehicle_id=v.id) }}"
+                    class="btn btn-sm btn-danger">
+                        Retire
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

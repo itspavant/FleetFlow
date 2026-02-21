@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add Vehicle</h2>
+
+<div class="card p-4 shadow-sm" style="max-width:600px;">
+    <form method="POST">
+
+        <div class="mb-3">
+            <label>Vehicle Type</label>
+            <select class="form-control" name="vehicle_type" required>
+                <option value="Truck">Truck</option>
+                <option value="Van">Van</option>
+                <option value="Bike">Bike</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Model</label>
+            <input class="form-control" name="model" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Year</label>
+            <input type="number" class="form-control" name="year" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">License Plate</label>
+            <input class="form-control" name="license_plate" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Max Capacity (kg)</label>
+            <input type="number" step="0.01"
+                   class="form-control"
+                   name="max_capacity"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Acquisition Cost</label>
+            <input type="number" step="0.01"
+                   class="form-control"
+                   name="acquisition_cost"
+                   required>
+        </div>
+
+        <button class="btn btn-success">Create Vehicle</button>
+        <a href="{{ url_for('vehicles.list_vehicles') }}"
+           class="btn btn-secondary">Cancel</a>
+
+    </form>
+</div>
+
+{% endblock %}

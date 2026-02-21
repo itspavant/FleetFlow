@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Command Center</h2>
+
+<div class="row mt-4">
+
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5>Active Fleet</h5>
+                <h3>{{ active_fleet }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5>Maintenance Alerts</h5>
+                <h3>{{ maintenance_alerts }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-body">
+                <h5>Pending Trips</h5>
+                <h3>{{ pending_trips }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
