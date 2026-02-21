@@ -14,6 +14,8 @@ from app.utils.permissions import role_required
 expenses_bp = Blueprint("expenses", __name__, url_prefix="/expenses")
 
 
+from app.models.trip_expense import TripExpense
+
 @expenses_bp.route("/")
 @login_required
 def expense_dashboard():
@@ -21,21 +23,17 @@ def expense_dashboard():
     search = request.args.get("search")
     sort = request.args.get("sort")
 
-    query = Trip.query.join(Trip.vehicle).join(Trip.driver).filter(
+    query = Trip.query.filter(
         Trip.status == TripStatus.COMPLETED
-    )
+    ).join(Trip.driver).join(Trip.vehicle)
 
-    # 🔍 SEARCH (trip id / driver / vehicle)
     if search:
         query = query.filter(
-            or_(
-                Vehicle.model.ilike(f"%{search}%"),
-                Driver.name.ilike(f"%{search}%"),
-                Trip.id.like(f"%{search}%")
-            )
+            (Driver.name.ilike(f"%{search}%")) |
+            (Vehicle.model.ilike(f"%{search}%")) |
+            (Trip.id.like(f"%{search}%"))
         )
 
-    # 🔃 SORT
     if sort == "asc":
         query = query.order_by(Trip.id.asc())
     else:
@@ -53,10 +51,10 @@ def expense_dashboard():
             FuelLog.trip_id == t.id
         ).scalar() or 0
 
-        maintenance_cost = db.session.query(
-            func.sum(MaintenanceLog.cost)
+        misc_cost = db.session.query(
+            func.sum(TripExpense.amount)
         ).filter(
-            MaintenanceLog.vehicle_id == t.vehicle_id
+            TripExpense.trip_id == t.id
         ).scalar() or 0
 
         distance = 0
@@ -66,7 +64,7 @@ def expense_dashboard():
         summary.append({
             "trip": t,
             "fuel": fuel_cost,
-            "maintenance": maintenance_cost,
+            "misc": misc_cost,
             "distance": distance
         })
 
@@ -74,3 +72,30 @@ def expense_dashboard():
         "expenses/dashboard.html",
         summary=summary
     )
+
+
+@expenses_bp.route("/add/<int:trip_id>", methods=["GET", "POST"])
+@login_required
+@role_required(UserRole.MANAGER, UserRole.DISPATCHER)
+def add_misc_expense(trip_id):
+
+    trip = Trip.query.get_or_404(trip_id)
+
+    if request.method == "POST":
+
+        description = request.form["description"]
+        amount = float(request.form["amount"])
+
+        expense = TripExpense(
+            trip_id=trip.id,
+            description=description,
+            amount=amount
+        )
+
+        db.session.add(expense)
+        db.session.commit()
+
+        flash("Misc expense added.")
+        return redirect(url_for("expenses.expense_dashboard"))
+
+    return render_template("expenses/add.html", trip=trip)

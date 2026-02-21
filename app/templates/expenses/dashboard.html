@@ -1,28 +1,69 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Trip & Expense Summary</h2>
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Trip & Expense Summary</h2>
 
-<table class="table table-hover mt-3">
+    {% if current_user.role.name in ["MANAGER", "ANALYST"] %}
+    <a href="{{ url_for('maintenance.create_maintenance') }}"
+       class="btn btn-primary">
+        + Add Expense
+    </a>
+    {% endif %}
+</div>
+
+<!-- 🔍 SEARCH & SORT -->
+<form method="GET" class="d-flex mt-3 mb-3">
+
+    <input type="text"
+           name="search"
+           value="{{ request.args.get('search','') }}"
+           class="form-control me-2"
+           placeholder="Search trip, driver, vehicle">
+
+    <select name="sort" class="form-select me-2">
+        <option value="desc">Newest</option>
+        <option value="asc">Oldest</option>
+    </select>
+
+    <button class="btn btn-secondary">
+        Apply
+    </button>
+
+</form>
+
+<table class="table table-hover">
     <thead>
         <tr>
             <th>Trip ID</th>
+            <th>Vehicle</th>
             <th>Driver</th>
             <th>Distance</th>
             <th>Fuel Expense</th>
-            <th>Maintenance Expense</th>
-            <th>Status</th>
+            <th>Misc Expense</th>
+            <th>Total Cost</th>
         </tr>
     </thead>
     <tbody>
         {% for row in summary %}
         <tr>
             <td>{{ row.trip.id }}</td>
+            <td>{{ row.trip.vehicle.model }}</td>
             <td>{{ row.trip.driver.name }}</td>
             <td>{{ row.distance }} km</td>
             <td>₹ {{ row.fuel }}</td>
-            <td>₹ {{ row.maintenance }}</td>
-            <td>{{ row.trip.status.value }}</td>
+            <td>₹ {{ row.misc }}</td>
+            <td>
+                <strong>
+                    ₹ {{ row.fuel + row.misc }}
+                </strong>
+            </td>
+            <td>
+            <a href="{{ url_for('expenses.add_misc_expense', trip_id=row.trip.id) }}"
+            class="btn btn-sm btn-secondary">
+                + Misc
+            </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
