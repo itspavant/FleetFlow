@@ -66,6 +66,11 @@
                             Complete
                         </button>
                     </form>
+                {% elif t.status.value == "Completed" %}
+                    <a href="{{ url_for('fuel.add_fuel', trip_id=t.id) }}"
+                    class="btn btn-sm btn-info">
+                        Add Fuel
+                    </a>
                 {% endif %}
             </td>
 
