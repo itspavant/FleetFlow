@@ -106,16 +106,24 @@ def dispatch_trip(trip_id):
 @login_required
 @role_required(UserRole.MANAGER, UserRole.DISPATCHER)
 def cancel_trip(trip_id):
+
     trip = Trip.query.get_or_404(trip_id)
 
-    if trip.status != TripStatus.DRAFT:
-        flash("Only draft trips can be cancelled.")
-        return redirect(url_for("trips.list_trips"))
+    if trip.status == TripStatus.DRAFT:
 
-    trip.status = TripStatus.CANCELLED
-    db.session.commit()
+        trip.status = TripStatus.CANCELLED
 
-    flash("Trip cancelled.")
+        # Reset driver & vehicle
+        if trip.driver:
+            trip.driver.status = DriverStatus.ON_DUTY
+
+        if trip.vehicle:
+            trip.vehicle.status = VehicleStatus.AVAILABLE
+
+        db.session.commit()
+
+        flash("Trip cancelled successfully.", "warning")
+
     return redirect(url_for("trips.list_trips"))
 
 

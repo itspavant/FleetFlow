@@ -58,10 +58,16 @@
             <td>
                 {% if t.status.value == "Draft" %}
                     <span class="badge bg-secondary">Draft</span>
+
                 {% elif t.status.value == "Dispatched" %}
                     <span class="badge bg-primary">Dispatched</span>
-                {% else %}
+
+                {% elif t.status.value == "Completed" %}
                     <span class="badge bg-success">Completed</span>
+
+                {% elif t.status.value == "Cancelled" %}
+                    <span class="badge bg-danger">Cancelled</span>
+
                 {% endif %}
             </td>
 

@@ -44,13 +44,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    setTimeout(function () {
-        let alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function (alert) {
-            let bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        });
-    }, 4000);  // 2 seconds
+document.addEventListener("DOMContentLoaded", function () {
+    let toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    toastElList.map(function (toastEl) {
+        let toast = new bootstrap.Toast(toastEl, { delay: 3000 })
+        toast.show()
+    })
+});
 </script>
 
 <body>
@@ -59,11 +59,30 @@
 
     <h4 class="text-white mb-1">FleetFlow</h4>
 
-    <div class="text-muted small mb-3">
-        Logged in as:
-        <div class="text-white fw-bold">
-            {{ current_user.role.value }}
+    <div class="mb-3">
+
+        <div class="text-white fw-bold fs-6">
+            {{ current_user.username }}
         </div>
+
+        <div class="mt-1">
+            <span class="badge 
+                {% if current_user.role.name == 'MANAGER' %}
+                    bg-primary
+                {% elif current_user.role.name == 'DISPATCHER' %}
+                    bg-info text-dark
+                {% elif current_user.role.name == 'SAFETY_OFFICER' %}
+                    bg-warning text-dark
+                {% elif current_user.role.name == 'ANALYST' %}
+                    bg-success
+                {% else %}
+                    bg-secondary
+                {% endif %}
+            ">
+                {{ current_user.role.value }}
+            </span>
+        </div>
+
     </div>
 
     <hr class="text-secondary">
@@ -160,23 +179,37 @@
 </div>
 
 <div class="content">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show"
-                    role="alert">
 
-                    {{ message }}
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+        style="z-index: 1100;">
 
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert"
-                            aria-label="Close">
-                    </button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast align-items-center border-0
+                        text-bg-{{ category if category in ['success','danger','warning','info','primary','secondary'] else 'secondary' }}"
+                        role="alert"
+                        aria-live="assertive"
+                        aria-atomic="true">
+
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                            <button type="button"
+                                    class="btn-close btn-close-white me-2 m-auto"
+                                    data-bs-dismiss="toast"
+                                    aria-label="Close">
+                            </button>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+    </div>
 
     {% block content %}{% endblock %}
 </div>
