@@ -2,6 +2,9 @@ from flask import Flask
 from .extensions import db, login_manager, migrate
 from app.models.user import User
 from app.extensions import login_manager
+from app.models import user, vehicle, driver, trip
+from app.models import user, vehicle, driver, trip, maintenance
+from app.models import user, vehicle, driver, trip, maintenance, fuel
 
 
 @login_manager.user_loader
