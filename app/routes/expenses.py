@@ -81,6 +81,11 @@ def add_misc_expense(trip_id):
 
     trip = Trip.query.get_or_404(trip_id)
 
+    # 🚫 Block if not completed BEFORE anything
+    if trip.status != TripStatus.COMPLETED:
+        flash("Misc expense can only be added to completed trips.", "warning")
+        return redirect(url_for("expenses.expense_dashboard"))
+
     if request.method == "POST":
 
         description = request.form["description"]
@@ -95,7 +100,8 @@ def add_misc_expense(trip_id):
         db.session.add(expense)
         db.session.commit()
 
-        flash("Misc expense added.")
+        flash("Misc expense added successfully.", "success")
+
         return redirect(url_for("expenses.expense_dashboard"))
 
     return render_template("expenses/add.html", trip=trip)
