@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Driver Performance & Safety</h2>
+
+<table class="table table-hover mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>License Expiry</th>
+            <th>Completion Rate</th>
+            <th>Compliance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in performance_data %}
+        <tr>
+            <td>{{ data.driver.name }}</td>
+
+            <td>
+                {% if data.expired %}
+                    <span class="text-danger fw-bold">
+                        {{ data.driver.license_expiry_date }}
+                    </span>
+                {% else %}
+                    {{ data.driver.license_expiry_date }}
+                {% endif %}
+            </td>
+
+            <td>{{ data.completion_rate }}%</td>
+
+            <td>
+                {% if data.expired %}
+                    <span class="badge bg-danger">Non-Compliant</span>
+                {% else %}
+                    <span class="badge bg-success">Compliant</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

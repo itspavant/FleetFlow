@@ -10,10 +10,37 @@ from app.models.driver import Driver
 drivers_bp = Blueprint("drivers", __name__, url_prefix="/drivers")
 
 
+from flask import request
+from sqlalchemy import or_
+
 @drivers_bp.route("/")
 @login_required
 def list_drivers():
-    drivers = Driver.query.all()
+
+    search = request.args.get("search")
+    status = request.args.get("status")
+    sort = request.args.get("sort")
+
+    query = Driver.query
+
+    if search:
+        query = query.filter(
+            or_(
+                Driver.name.ilike(f"%{search}%"),
+                Driver.license_number.ilike(f"%{search}%")
+            )
+        )
+
+    if status:
+        query = query.filter(Driver.status == DriverStatus[status])
+
+    if sort == "asc":
+        query = query.order_by(Driver.id.asc())
+    else:
+        query = query.order_by(Driver.id.desc())
+
+    drivers = query.all()
+
     return render_template("drivers/list.html", drivers=drivers)
 
 

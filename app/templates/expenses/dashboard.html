@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Trip & Expense Summary</h2>
+
+<table class="table table-hover mt-3">
+    <thead>
+        <tr>
+            <th>Trip ID</th>
+            <th>Driver</th>
+            <th>Distance</th>
+            <th>Fuel Expense</th>
+            <th>Maintenance Expense</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in summary %}
+        <tr>
+            <td>{{ row.trip.id }}</td>
+            <td>{{ row.trip.driver.name }}</td>
+            <td>{{ row.distance }} km</td>
+            <td>₹ {{ row.fuel }}</td>
+            <td>₹ {{ row.maintenance }}</td>
+            <td>{{ row.trip.status.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

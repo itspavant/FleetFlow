@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>FleetFlow</title>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -11,71 +12,119 @@
     <div class="row">
 
         <!-- Sidebar -->
-        <div class="col-2 bg-dark text-white vh-100 p-3">
-            <h4>FleetFlow</h4>
-            <hr>
-                <ul class="nav flex-column">
+        <div class="col-2 bg-dark text-white vh-100 p-3 d-flex flex-column">
 
-                    <!-- Dashboard visible to all logged users -->
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                        href="{{ url_for('dashboard.home') }}">
-                            Dashboard
-                        </a>
-                    </li>
+    <div>
+        <h4>FleetFlow</h4>
+        <hr>
 
-                    <!-- Vehicles (Manager only) -->
-                    {% if current_user.role.name == "MANAGER" %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                        href="{{ url_for('vehicles.list_vehicles') }}">
-                            Vehicles
-                        </a>
-                    </li>
-                    {% endif %}
+        <!-- Logged-in Info -->
+        <div class="mb-3">
+            <div class="small text-muted">Logged in as</div>
+            <div class="fw-bold">
+                {{ current_user.email }}
+            </div>
 
-                    <!-- Drivers (Manager + Safety Officer + Dispatcher) -->
-                    {% if current_user.role.name in ["MANAGER", "SAFETY_OFFICER", "DISPATCHER"] %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                        href="{{ url_for('drivers.list_drivers') }}">
-                            Drivers
-                        </a>
-                    </li>
-                    {% endif %}
-
-                    <!-- Trips (Manager + Dispatcher) -->
-                    {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                        href="{{ url_for('trips.list_trips') }}">
-                            Trips
-                        </a>
-                    </li>
-                    {% endif %}
-
-                    <!-- Maintenance (Manager + Safety Officer) -->
-                    {% if current_user.role.name in ["MANAGER", "SAFETY_OFFICER"] %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                        href="{{ url_for('maintenance.list_maintenance') }}">
-                            Maintenance
-                        </a>
-                    </li>
-                    {% endif %}
-
-                    <!-- Analytics (Manager + Analyst) -->
-                    {% if current_user.role.name in ["MANAGER", "ANALYST"] %}
-                    <li class="nav-item">
-                        <a class="nav-link text-white"
-                        href="{{ url_for('analytics.view_analytics') }}">
-                            Analytics
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
+            <span class="badge bg-info mt-1">
+                {{ current_user.role.value }}
+            </span>
         </div>
 
+        <hr>
+
+        <ul class="nav flex-column">
+
+            <!-- Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                   href="{{ url_for('dashboard.home') }}">
+                    Dashboard
+                </a>
+            </li>
+
+            <!-- Vehicles -->
+            {% if current_user.role.name == "MANAGER" %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                   href="{{ url_for('vehicles.list_vehicles') }}">
+                    Vehicles
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Drivers -->
+            {% if current_user.role.name in ["MANAGER", "SAFETY_OFFICER", "DISPATCHER"] %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                   href="{{ url_for('drivers.list_drivers') }}">
+                    Drivers
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Trips -->
+            {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                   href="{{ url_for('trips.list_trips') }}">
+                    Trips
+                </a>
+            </li>
+            {% endif %}
+            
+            <!-- Performance -->
+            {% if current_user.role.name in ["MANAGER","SAFETY_OFFICER","ANALYST"] %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                href="{{ url_for('performance.performance_dashboard') }}">
+                    Performance
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Maintenance -->
+            {% if current_user.role.name in ["MANAGER", "SAFETY_OFFICER"] %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                   href="{{ url_for('maintenance.list_maintenance') }}">
+                    Maintenance
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- Expenses -->
+            {% if current_user.role.name in ["MANAGER","ANALYST"] %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                href="{{ url_for('expenses.expense_dashboard') }}">
+                    Trip & Expense
+                </a>
+            </li>
+            {% endif %}            
+
+            <!-- Analytics -->
+            {% if current_user.role.name in ["MANAGER", "ANALYST"] %}
+            <li class="nav-item">
+                <a class="nav-link text-white"
+                   href="{{ url_for('analytics.view_analytics') }}">
+                    Analytics
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+
+    <!-- Logout at Bottom -->
+    <div class="mt-auto">
+        <hr>
+        <a href="{{ url_for('auth.logout') }}"
+           class="btn btn-outline-light w-100">
+            Logout
+        </a>
+    </div>
+
+</div>
         <!-- Main Content -->
         <div class="col-10 p-4">
                 {% with messages = get_flashed_messages() %}

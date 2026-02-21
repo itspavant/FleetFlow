@@ -11,11 +11,27 @@ from app.extensions import db
 
 maintenance_bp = Blueprint("maintenance", __name__, url_prefix="/maintenance")
 
+from flask import request
 
 @maintenance_bp.route("/")
 @login_required
 def list_maintenance():
-    logs = MaintenanceLog.query.all()
+
+    status = request.args.get("status")
+    sort = request.args.get("sort")
+
+    query = MaintenanceLog.query
+
+    if status:
+        query = query.filter(MaintenanceLog.status == MaintenanceStatus[status])
+
+    if sort == "asc":
+        query = query.order_by(MaintenanceLog.id.asc())
+    else:
+        query = query.order_by(MaintenanceLog.id.desc())
+
+    logs = query.all()
+
     return render_template("maintenance/list.html", logs=logs)
 
 

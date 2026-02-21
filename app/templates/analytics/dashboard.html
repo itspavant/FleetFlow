@@ -1,62 +1,64 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Fleet Analytics</h2>
 
-<div class="row mt-4">
+<h2 class="mb-4">Reports & Analytics</h2>
 
-    <div class="col-md-3">
-        <div class="card bg-primary text-white p-3">
-            <h5>Total Revenue</h5>
-            <h3>{{ total_revenue }}</h3>
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Total Revenue</h6>
+                <h3 class="text-success">₹ {{ total_revenue }}</h3>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card bg-danger text-white p-3">
-            <h5>Total Fuel Cost</h5>
-            <h3>{{ total_fuel }}</h3>
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Total Fuel Cost</h6>
+                <h3 class="text-danger">₹ {{ total_fuel_cost }}</h3>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card bg-warning text-dark p-3">
-            <h5>Total Maintenance</h5>
-            <h3>{{ total_maintenance }}</h3>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card bg-success text-white p-3">
-            <h5>Net Profit</h5>
-            <h3>{{ net_profit }}</h3>
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Fleet ROI</h6>
+                <h3 class="text-primary">{{ fleet_roi }}%</h3>
+            </div>
         </div>
     </div>
 
 </div>
 
-<hr>
+<!-- Revenue vs Cost Chart -->
+<div class="card shadow-sm">
+    <div class="card-header">
+        Revenue vs Cost
+    </div>
+    <div class="card-body">
+        <canvas id="financeChart"></canvas>
+    </div>
+</div>
 
-<h4>Vehicle Breakdown</h4>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('financeChart');
 
-<table class="table table-hover mt-3">
-    <thead>
-        <tr>
-            <th>Vehicle</th>
-            <th>Profit</th>
-            <th>ROI</th>
-            <th>Fuel Efficiency (km/L)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for data in vehicle_data %}
-        <tr>
-            <td>{{ data.vehicle.model }}</td>
-            <td>{{ data.profit }}</td>
-            <td>{{ data.roi }}</td>
-            <td>{{ data.fuel_efficiency }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Revenue', 'Fuel Cost'],
+        datasets: [{
+            label: 'Amount',
+            data: [{{ total_revenue }}, {{ total_fuel_cost }}],
+            backgroundColor: ['#198754', '#dc3545']
+        }]
+    }
+});
+</script>
+
 {% endblock %}

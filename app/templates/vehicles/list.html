@@ -1,6 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<form method="GET" class="d-flex mb-3">
+
+    <input type="text" name="search"
+           value="{{ request.args.get('search','') }}"
+           class="form-control me-2"
+           placeholder="Search model or plate">
+
+    <select name="status" class="form-select me-2">
+        <option value="">All Status</option>
+        <option value="AVAILABLE">Available</option>
+        <option value="ON_TRIP">On Trip</option>
+        <option value="IN_SHOP">In Shop</option>
+        <option value="RETIRED">Retired</option>
+    </select>
+
+    <select name="sort" class="form-select me-2">
+        <option value="desc">Newest</option>
+        <option value="asc">Oldest</option>
+    </select>
+
+    <button class="btn btn-primary">Apply</button>
+</form>
+
 <div class="d-flex justify-content-between align-items-center">
     <h2>Vehicles</h2>
         {% if current_user.role.name == "MANAGER" %}
@@ -10,6 +34,7 @@
         </a>
         {% endif %}
 </div>
+
 
 <table class="table table-hover mt-3">
     <thead>

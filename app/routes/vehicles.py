@@ -10,10 +10,41 @@ from app.models.enums import VehicleStatus, VehicleType
 vehicles_bp = Blueprint("vehicles", __name__, url_prefix="/vehicles")
 
 
+from flask import request
+from sqlalchemy import or_
+from app.models.enums import VehicleStatus
+
 @vehicles_bp.route("/")
 @login_required
 def list_vehicles():
-    vehicles = Vehicle.query.all()
+
+    search = request.args.get("search")
+    status = request.args.get("status")
+    sort = request.args.get("sort")
+
+    query = Vehicle.query
+
+    # 🔍 SEARCH (model or plate)
+    if search:
+        query = query.filter(
+            or_(
+                Vehicle.model.ilike(f"%{search}%"),
+                Vehicle.license_plate.ilike(f"%{search}%")
+            )
+        )
+
+    # 🎯 FILTER
+    if status:
+        query = query.filter(Vehicle.status == VehicleStatus[status])
+
+    # 🔃 SORT
+    if sort == "asc":
+        query = query.order_by(Vehicle.id.asc())
+    else:
+        query = query.order_by(Vehicle.id.desc())
+
+    vehicles = query.all()
+
     return render_template("vehicles/list.html", vehicles=vehicles)
 
 

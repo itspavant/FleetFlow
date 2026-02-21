@@ -13,13 +13,36 @@ from app.services.exceptions import TripAssignmentError
 
 trips_bp = Blueprint("trips", __name__, url_prefix="/trips")
 
+from flask import request
+from sqlalchemy import or_
 
 @trips_bp.route("/")
 @login_required
 def list_trips():
-    trips = Trip.query.filter(
-        Trip.status != TripStatus.CANCELLED
-    ).all()
+
+    search = request.args.get("search")
+    status = request.args.get("status")
+    sort = request.args.get("sort")
+
+    query = Trip.query.join(Trip.vehicle).join(Trip.driver)
+
+    if search:
+        query = query.filter(
+            or_(
+                Vehicle.model.ilike(f"%{search}%"),
+                Driver.name.ilike(f"%{search}%")
+            )
+        )
+
+    if status:
+        query = query.filter(Trip.status == TripStatus[status])
+
+    if sort == "asc":
+        query = query.order_by(Trip.id.asc())
+    else:
+        query = query.order_by(Trip.id.desc())
+
+    trips = query.all()
 
     return render_template("trips/list.html", trips=trips)
 

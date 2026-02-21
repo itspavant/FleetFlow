@@ -55,5 +55,7 @@ def login():
 @auth_bp.route("/logout")
 @login_required
 def logout():
+    from flask_login import logout_user
     logout_user()
+    flash("Logged out successfully.")
     return redirect(url_for("auth.login"))

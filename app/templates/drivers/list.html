@@ -1,6 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<form method="GET" class="d-flex mb-3">
+
+    <input type="text"
+           name="search"
+           value="{{ request.args.get('search','') }}"
+           class="form-control me-2"
+           placeholder="Search name or license">
+
+    <select name="status" class="form-select me-2">
+        <option value="">All Status</option>
+        <option value="ON_DUTY">On Duty</option>
+        <option value="ON_TRIP">On Trip</option>
+        <option value="SUSPENDED">Suspended</option>
+    </select>
+
+    <select name="sort" class="form-select me-2">
+        <option value="desc">Newest</option>
+        <option value="asc">Oldest</option>
+    </select>
+
+    <button class="btn btn-primary">Apply</button>
+
+</form>
+
 <div class="d-flex justify-content-between align-items-center">
     <h2>Drivers</h2>
 

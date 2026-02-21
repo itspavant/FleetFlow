@@ -1,6 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<form method="GET" class="d-flex mb-3">
+
+    <input type="text"
+           name="search"
+           value="{{ request.args.get('search','') }}"
+           class="form-control me-2"
+           placeholder="Search vehicle or driver">
+
+    <select name="status" class="form-select me-2">
+        <option value="">All Status</option>
+        <option value="DRAFT">Draft</option>
+        <option value="DISPATCHED">Dispatched</option>
+        <option value="COMPLETED">Completed</option>
+    </select>
+
+    <select name="sort" class="form-select me-2">
+        <option value="desc">Newest</option>
+        <option value="asc">Oldest</option>
+    </select>
+
+    <button class="btn btn-primary">Apply</button>
+
+</form>
+
 <div class="d-flex justify-content-between align-items-center">
     <h2>Trips</h2>
         {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}

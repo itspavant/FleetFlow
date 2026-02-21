@@ -1,36 +1,133 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Command Center</h2>
 
-<div class="row mt-4">
+<h2 class="mb-4">Fleet Command Center</h2>
 
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
+<form method="GET" class="d-flex justify-content-between align-items-center mb-3">
+
+    <input type="text"
+           name="search"
+           value="{{ request.args.get('search', '') }}"
+           class="form-control w-50"
+           placeholder="Search trips, vehicles, drivers...">
+
+    <div class="d-flex">
+
+        <select name="status" class="form-select me-2">
+            <option value="">All Status</option>
+            <option value="DRAFT">Draft</option>
+            <option value="DISPATCHED">Dispatched</option>
+            <option value="COMPLETED">Completed</option>
+        </select>
+
+        <select name="sort" class="form-select me-2">
+            <option value="desc">Newest</option>
+            <option value="asc">Oldest</option>
+        </select>
+
+        <button class="btn btn-primary btn-sm">
+            Apply
+        </button>
+
+    </div>
+
+</form>
+
+<!-- Quick Actions -->
+<div class="mb-4">
+    {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
+    <a href="{{ url_for('trips.create_trip') }}"
+       class="btn btn-primary me-2">
+        + New Trip
+    </a>
+    {% endif %}
+
+    {% if current_user.role.name == "MANAGER" %}
+    <a href="{{ url_for('vehicles.create_vehicle') }}"
+       class="btn btn-success">
+        + New Vehicle
+    </a>
+    {% endif %}
+</div>
+
+<!-- KPI Cards -->
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
             <div class="card-body">
-                <h5>Active Fleet</h5>
-                <h3>{{ active_fleet }}</h3>
+                <h6 class="text-muted">Active Fleet</h6>
+                <h2 class="text-primary">{{ active_fleet }}</h2>
+                <small>Utilization: {{ utilization_rate }}%</small>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
             <div class="card-body">
-                <h5>Maintenance Alerts</h5>
-                <h3>{{ maintenance_alerts }}</h3>
+                <h6 class="text-muted">Maintenance Alerts</h6>
+                <h2 class="text-warning">{{ maintenance_alerts }}</h2>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card text-white bg-secondary mb-3">
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
             <div class="card-body">
-                <h5>Pending Trips</h5>
-                <h3>{{ pending_trips }}</h3>
+                <h6 class="text-muted">Pending Cargo</h6>
+                <h2 class="text-secondary">{{ pending_trips }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Expired Licenses</h6>
+                <h2 class="text-danger">{{ expired_licenses }}</h2>
             </div>
         </div>
     </div>
 
 </div>
+
+<!-- Recent Trips Table -->
+<div class="card shadow-sm">
+    <div class="card-header">
+        Recent Trips
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vehicle</th>
+                    <th>Driver</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trip in recent_trips %}
+                <tr>
+                    <td>{{ trip.id }}</td>
+                    <td>{{ trip.vehicle.model }}</td>
+                    <td>{{ trip.driver.name }}</td>
+                    <td>
+                        {% if trip.status.value == "Draft" %}
+                            <span class="badge bg-secondary">Draft</span>
+                        {% elif trip.status.value == "Dispatched" %}
+                            <span class="badge bg-primary">On Trip</span>
+                        {% else %}
+                            <span class="badge bg-success">Completed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}
