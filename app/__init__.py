@@ -19,12 +19,13 @@ def create_app():
     # Register blueprints
     from app.routes.auth import auth_bp
     from app.routes.dashboard import dashboard_bp
+    from app.routes.vehicles import vehicles_bp
+    from app.routes.drivers import drivers_bp   # ✅ Add here
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
-
-    from app.routes.vehicles import vehicles_bp
     app.register_blueprint(vehicles_bp)
+    app.register_blueprint(drivers_bp)   
 
     # User loader
     from app.models.user import User

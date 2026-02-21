@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add Driver</h2>
+
+<div class="card p-4 shadow-sm" style="max-width:600px;">
+    <form method="POST">
+
+        <div class="mb-3">
+            <label>Name</label>
+            <input class="form-control" name="name" required>
+        </div>
+
+        <div class="mb-3">
+            <label>License Number</label>
+            <input class="form-control" name="license_number" required>
+        </div>
+
+        <div class="mb-3">
+            <label>License Category</label>
+            <input class="form-control" name="license_category" required>
+        </div>
+
+        <div class="mb-3">
+            <label>License Expiry Date</label>
+            <input type="date"
+                   class="form-control"
+                   name="license_expiry_date"
+                   required>
+        </div>
+
+        <button class="btn btn-success">Create Driver</button>
+        <a href="{{ url_for('drivers.list_drivers') }}"
+           class="btn btn-secondary">Cancel</a>
+
+    </form>
+</div>
+{% endblock %}
