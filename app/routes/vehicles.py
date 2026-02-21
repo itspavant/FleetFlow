@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.utils.permissions import role_required
+from app.models.enums import UserRole
 from flask_login import login_required
 from app.extensions import db
 from app.models.vehicle import Vehicle
 from app.models.enums import VehicleStatus, VehicleType
-from app.utils.permissions import role_required
-from app.models.enums import UserRole
+
 
 vehicles_bp = Blueprint("vehicles", __name__, url_prefix="/vehicles")
 

@@ -3,10 +3,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center">
     <h2>Maintenance Logs</h2>
-    <a href="{{ url_for('maintenance.create_maintenance') }}"
-       class="btn btn-primary">
-       + Add Maintenance
-    </a>
+        {% if current_user.role.name in ["MANAGER", "SAFETY_OFFICER"] %}
+        <a href="{{ url_for('maintenance.create_maintenance') }}"
+        class="btn btn-primary">
+        + Add Maintenance
+        </a>
+        {% endif %}
 </div>
 
 <table class="table table-hover mt-3">
@@ -38,15 +40,21 @@
 
             <td>
                 {% if log.status.value == "Open" %}
-                    <a href="{{ url_for('maintenance.edit_maintenance', maintenance_id=log.id) }}"
-                    class="btn btn-sm btn-warning me-1">
-                        Edit
-                    </a>
 
-                    <a href="{{ url_for('maintenance.complete_maintenance', maintenance_id=log.id) }}"
-                    class="btn btn-sm btn-success">
-                        Complete
-                    </a>
+                    {% if current_user.role.name in ["MANAGER", "SAFETY_OFFICER"] %}
+                        <a href="{{ url_for('maintenance.edit_maintenance', maintenance_id=log.id) }}"
+                        class="btn btn-sm btn-warning me-1">
+                            Edit
+                        </a>
+                    {% endif %}
+
+                    {% if current_user.role.name == "MANAGER" %}
+                        <a href="{{ url_for('maintenance.complete_maintenance', maintenance_id=log.id) }}"
+                        class="btn btn-sm btn-success">
+                            Complete
+                        </a>
+                    {% endif %}
+
                 {% endif %}
             </td>
         </tr>

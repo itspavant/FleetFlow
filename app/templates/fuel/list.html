@@ -4,10 +4,12 @@
 <h2>Fuel Logs for Trip #{{ trip.id }}</h2>
 
 <div class="mb-3">
+    {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
     <a href="{{ url_for('fuel.add_fuel', trip_id=trip.id) }}"
-       class="btn btn-primary">
-       + Add Fuel
+    class="btn btn-primary">
+    + Add Fuel
     </a>
+    {% endif %}
 </div>
 
 <table class="table table-hover">
@@ -25,17 +27,21 @@
             <td>{{ f.date }}</td>
             <td>{{ f.liters }}</td>
             <td>{{ f.cost }}</td>
-            <td>
+        <td>
+            {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
                 <a href="{{ url_for('fuel.edit_fuel', fuel_id=f.id) }}"
-                   class="btn btn-sm btn-warning">
-                   Edit
+                class="btn btn-sm btn-warning">
+                Edit
                 </a>
+            {% endif %}
 
+            {% if current_user.role.name == "MANAGER" %}
                 <a href="{{ url_for('fuel.delete_fuel', fuel_id=f.id) }}"
-                   class="btn btn-sm btn-danger">
-                   Delete
+                class="btn btn-sm btn-danger">
+                Delete
                 </a>
-            </td>
+            {% endif %}
+        </td>
         </tr>
         {% endfor %}
     </tbody>

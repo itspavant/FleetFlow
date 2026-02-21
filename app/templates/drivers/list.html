@@ -3,10 +3,13 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center">
     <h2>Drivers</h2>
+
+    {% if current_user.role.name == "MANAGER" %}
     <a href="{{ url_for('drivers.create_driver') }}"
        class="btn btn-primary">
        + Add Driver
     </a>
+    {% endif %}
 </div>
 
 <table class="table table-hover mt-3">

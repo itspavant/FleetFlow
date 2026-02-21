@@ -3,10 +3,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center">
     <h2>Vehicles</h2>
-    <a href="{{ url_for('vehicles.create_vehicle') }}"
-       class="btn btn-primary">
-       + Add Vehicle
-    </a>
+        {% if current_user.role.name == "MANAGER" %}
+        <a href="{{ url_for('vehicles.create_vehicle') }}"
+        class="btn btn-primary">
+        + Add Vehicle
+        </a>
+        {% endif %}
 </div>
 
 <table class="table table-hover mt-3">
@@ -19,7 +21,9 @@
             <th>Capacity</th>
             <th>Odometer</th>
             <th>Status</th>
+            {% if current_user.role.name == "MANAGER" %}
             <th>Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -51,17 +55,23 @@
                 {% endif %}
             </td>
             <td>
-                <a href="{{ url_for('vehicles.edit_vehicle', vehicle_id=v.id) }}"
-                class="btn btn-sm btn-warning">
-                    Edit
-                </a>
 
-                {% if v.status.value != "Retired" %}
-                    <a href="{{ url_for('vehicles.retire_vehicle', vehicle_id=v.id) }}"
-                    class="btn btn-sm btn-danger">
-                        Retire
+                {% if current_user.role.name == "MANAGER" %}
+
+                    <a href="{{ url_for('vehicles.edit_vehicle', vehicle_id=v.id) }}"
+                    class="btn btn-sm btn-warning">
+                        Edit
                     </a>
+
+                    {% if v.status.value != "Retired" %}
+                        <a href="{{ url_for('vehicles.retire_vehicle', vehicle_id=v.id) }}"
+                        class="btn btn-sm btn-danger">
+                            Retire
+                        </a>
+                    {% endif %}
+
                 {% endif %}
+
             </td>
         </tr>
         {% endfor %}

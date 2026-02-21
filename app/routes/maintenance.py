@@ -8,8 +8,6 @@ from app.models.enums import VehicleStatus, MaintenanceStatus
 from app.services.maintenance_service import MaintenanceService
 from app.services.exceptions import InvalidStateTransitionError
 from app.extensions import db
-from app.utils.permissions import role_required
-from app.models.enums import UserRole
 
 maintenance_bp = Blueprint("maintenance", __name__, url_prefix="/maintenance")
 

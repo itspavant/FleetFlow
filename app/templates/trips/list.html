@@ -3,10 +3,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center">
     <h2>Trips</h2>
-    <a href="{{ url_for('trips.create_trip') }}"
-       class="btn btn-primary">
-       + Create Trip
-    </a>
+        {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
+        <a href="{{ url_for('trips.create_trip') }}"
+        class="btn btn-primary">
+        + Create Trip
+        </a>
+        {% endif %}
 </div>
 
 <table class="table table-hover mt-3">
@@ -39,44 +41,58 @@
             </td>
 
             <td>
+
                 {% if t.status.value == "Draft" %}
-                    <a href="{{ url_for('trips.edit_trip', trip_id=t.id) }}"
-                    class="btn btn-sm btn-info">
-                        Edit
-                    </a>
 
-                    <a href="{{ url_for('trips.dispatch_trip', trip_id=t.id) }}"
-                    class="btn btn-sm btn-warning">
-                        Dispatch
-                    </a>
+                    {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
+                        <a href="{{ url_for('trips.edit_trip', trip_id=t.id) }}"
+                        class="btn btn-sm btn-info">
+                            Edit
+                        </a>
 
-                    <a href="{{ url_for('trips.cancel_trip', trip_id=t.id) }}"
-                    class="btn btn-sm btn-danger">
-                        Cancel
-                    </a>
+                        <a href="{{ url_for('trips.dispatch_trip', trip_id=t.id) }}"
+                        class="btn btn-sm btn-warning">
+                            Dispatch
+                        </a>
+
+                        <a href="{{ url_for('trips.cancel_trip', trip_id=t.id) }}"
+                        class="btn btn-sm btn-danger">
+                            Cancel
+                        </a>
+                    {% endif %}
+
                 {% elif t.status.value == "Dispatched" %}
-                    <form method="POST"
-                          action="{{ url_for('trips.complete_trip', trip_id=t.id) }}"
-                          style="display:inline;">
-                        <input type="number"
-                               name="end_odometer"
-                               placeholder="Final Odometer"
-                               required>
-                        <button class="btn btn-sm btn-success">
-                            Complete
-                        </button>
-                    </form>
-                {% elif t.status.value == "Completed" %}
-                    <a href="{{ url_for('fuel.view_fuel', trip_id=t.id) }}"
-                    class="btn btn-sm btn-secondary">
-                        View Fuel
-                    </a>
 
-                    <a href="{{ url_for('fuel.add_fuel', trip_id=t.id) }}"
-                    class="btn btn-sm btn-info">
-                        Add Fuel
-                    </a>
+                    {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
+                        <form method="POST"
+                            action="{{ url_for('trips.complete_trip', trip_id=t.id) }}"
+                            style="display:inline;">
+                            <input type="number"
+                                name="end_odometer"
+                                placeholder="Final Odometer"
+                                required>
+                            <button class="btn btn-sm btn-success">
+                                Complete
+                            </button>
+                        </form>
+                    {% endif %}
+
+                {% elif t.status.value == "Completed" %}
+
+                    {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
+                        <a href="{{ url_for('fuel.view_fuel', trip_id=t.id) }}"
+                        class="btn btn-sm btn-secondary">
+                            View Fuel
+                        </a>
+
+                        <a href="{{ url_for('fuel.add_fuel', trip_id=t.id) }}"
+                        class="btn btn-sm btn-info">
+                            Add Fuel
+                        </a>
+                    {% endif %}
+
                 {% endif %}
+
             </td>
 
         </tr>
