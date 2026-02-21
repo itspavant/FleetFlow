@@ -3,6 +3,11 @@ from app.models.base import BaseModel
 from app.models.enums import TripStatus
 from datetime import datetime
 
+fuel_logs = db.relationship(
+    "FuelLog",
+    backref="trip",
+    cascade="all, delete-orphan"
+)
 
 class Trip(BaseModel):
     __tablename__ = "trips"

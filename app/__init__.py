@@ -24,6 +24,7 @@ def create_app():
     from app.routes.trips import trips_bp
     from app.routes.maintenance import maintenance_bp
     from app.routes.fuel import fuel_bp
+    from app.routes.analytics import analytics_bp
 
 
     app.register_blueprint(auth_bp)
@@ -33,6 +34,8 @@ def create_app():
     app.register_blueprint(trips_bp)
     app.register_blueprint(maintenance_bp)
     app.register_blueprint(fuel_bp)
+    app.register_blueprint(analytics_bp)
+
 
     # User loader
     from app.models.user import User

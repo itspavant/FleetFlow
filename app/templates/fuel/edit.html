@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Edit Fuel Log</h2>
+
+<div class="card p-4 shadow-sm" style="max-width:600px;">
+    <form method="POST">
+
+        <div class="mb-3">
+            <label>Liters</label>
+            <input type="number"
+                   step="0.01"
+                   class="form-control"
+                   name="liters"
+                   value="{{ fuel.liters }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label>Cost</label>
+            <input type="number"
+                   step="0.01"
+                   class="form-control"
+                   name="cost"
+                   value="{{ fuel.cost }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label>Date</label>
+            <input type="date"
+                   class="form-control"
+                   name="date"
+                   value="{{ fuel.date }}"
+                   required>
+        </div>
+
+        <button class="btn btn-success">Update</button>
+    </form>
+</div>
+{% endblock %}

@@ -67,6 +67,11 @@
                         </button>
                     </form>
                 {% elif t.status.value == "Completed" %}
+                    <a href="{{ url_for('fuel.view_fuel', trip_id=t.id) }}"
+                    class="btn btn-sm btn-secondary">
+                        View Fuel
+                    </a>
+
                     <a href="{{ url_for('fuel.add_fuel', trip_id=t.id) }}"
                     class="btn btn-sm btn-info">
                         Add Fuel

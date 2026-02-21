@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Fuel Logs for Trip #{{ trip.id }}</h2>
+
+<div class="mb-3">
+    <a href="{{ url_for('fuel.add_fuel', trip_id=trip.id) }}"
+       class="btn btn-primary">
+       + Add Fuel
+    </a>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Liters</th>
+            <th>Cost</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for f in logs %}
+        <tr>
+            <td>{{ f.date }}</td>
+            <td>{{ f.liters }}</td>
+            <td>{{ f.cost }}</td>
+            <td>
+                <a href="{{ url_for('fuel.edit_fuel', fuel_id=f.id) }}"
+                   class="btn btn-sm btn-warning">
+                   Edit
+                </a>
+
+                <a href="{{ url_for('fuel.delete_fuel', fuel_id=f.id) }}"
+                   class="btn btn-sm btn-danger">
+                   Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <strong>Total Fuel Cost:</strong>
+    {{ logs | sum(attribute='cost') }}
+</div>
+
+<a href="{{ url_for('trips.list_trips') }}"
+   class="btn btn-secondary mt-3">
+   Back
+</a>
+{% endblock %}

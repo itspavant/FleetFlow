@@ -34,3 +34,41 @@ def add_fuel(trip_id):
         return redirect(url_for("trips.list_trips"))
 
     return render_template("fuel/add.html", trip=trip)
+
+
+@fuel_bp.route("/view/<int:trip_id>")
+@login_required
+def view_fuel(trip_id):
+    trip = Trip.query.get_or_404(trip_id)
+    logs = trip.fuel_logs
+    return render_template("fuel/list.html", trip=trip, logs=logs)
+
+
+@fuel_bp.route("/edit/<int:fuel_id>", methods=["GET", "POST"])
+@login_required
+def edit_fuel(fuel_id):
+    fuel = FuelLog.query.get_or_404(fuel_id)
+
+    if request.method == "POST":
+        fuel.liters = float(request.form["liters"])
+        fuel.cost = float(request.form["cost"])
+        fuel.date = request.form["date"]
+
+        db.session.commit()
+        flash("Fuel updated.")
+        return redirect(url_for("fuel.view_fuel", trip_id=fuel.trip_id))
+
+    return render_template("fuel/edit.html", fuel=fuel)
+
+
+@fuel_bp.route("/delete/<int:fuel_id>")
+@login_required
+def delete_fuel(fuel_id):
+    fuel = FuelLog.query.get_or_404(fuel_id)
+    trip_id = fuel.trip_id
+
+    db.session.delete(fuel)
+    db.session.commit()
+
+    flash("Fuel deleted.")
+    return redirect(url_for("fuel.view_fuel", trip_id=trip_id))
