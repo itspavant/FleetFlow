@@ -11,7 +11,7 @@ from app.services.exceptions import InvalidStateTransitionError
 class MaintenanceService:
 
     @staticmethod
-    def create_maintenance(vehicle_id, description, cost):
+    def create_maintenance(vehicle_id, description, cost, remarks=None):
         vehicle = Vehicle.query.get(vehicle_id)
 
         if not vehicle:
@@ -27,6 +27,7 @@ class MaintenanceService:
             vehicle_id=vehicle_id,
             description=description,
             cost=cost,
+            remarks=remarks,
             status=MaintenanceStatus.OPEN
         )
 

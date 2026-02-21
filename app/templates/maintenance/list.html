@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Maintenance Logs</h2>
+    <a href="{{ url_for('maintenance.create_maintenance') }}"
+       class="btn btn-primary">
+       + Add Maintenance
+    </a>
+</div>
+
+<table class="table table-hover mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Vehicle</th>
+            <th>Description</th>
+            <th>Cost</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.vehicle.model }}</td>
+            <td>{{ log.description }}</td>
+            <td>{{ log.cost }}</td>
+
+            <td>
+                {% if log.status.value == "Open" %}
+                    <span class="badge bg-warning text-dark">Open</span>
+                {% else %}
+                    <span class="badge bg-success">Completed</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if log.status.value == "Open" %}
+                    <a href="{{ url_for('maintenance.edit_maintenance', maintenance_id=log.id) }}"
+                    class="btn btn-sm btn-warning me-1">
+                        Edit
+                    </a>
+
+                    <a href="{{ url_for('maintenance.complete_maintenance', maintenance_id=log.id) }}"
+                    class="btn btn-sm btn-success">
+                        Complete
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -22,12 +22,15 @@ def create_app():
     from app.routes.vehicles import vehicles_bp
     from app.routes.drivers import drivers_bp
     from app.routes.trips import trips_bp
+    from app.routes.maintenance import maintenance_bp
+
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(vehicles_bp)
     app.register_blueprint(drivers_bp)
     app.register_blueprint(trips_bp)
+    app.register_blueprint(maintenance_bp)
 
     # User loader
     from app.models.user import User
