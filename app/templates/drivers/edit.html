@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Edit Driver</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+        <label>Name</label>
+        <input name="name" value="{{ driver.name }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>License Number</label>
+        <input name="license_number" value="{{ driver.license_number }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>License Category</label>
+        <input name="license_category" value="{{ driver.license_category }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>License Expiry</label>
+        <input type="date"
+               name="license_expiry_date"
+               value="{{ driver.license_expiry_date }}"
+               class="form-control"
+               required>
+    </div>
+
+    <button class="btn btn-success">Update</button>
+    <a href="{{ url_for('drivers.list_drivers') }}"
+       class="btn btn-secondary">
+       Cancel
+    </a>
+
+</form>
+{% endblock %}

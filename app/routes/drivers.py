@@ -48,3 +48,38 @@ def create_driver():
         return redirect(url_for("drivers.list_drivers"))
 
     return render_template("drivers/create.html")
+
+
+@drivers_bp.route("/edit/<int:driver_id>", methods=["GET", "POST"])
+@login_required
+@role_required(UserRole.MANAGER, UserRole.SAFETY_OFFICER)
+def edit_driver(driver_id):
+    driver = Driver.query.get_or_404(driver_id)
+
+    if request.method == "POST":
+        driver.name = request.form["name"]
+        driver.license_number = request.form["license_number"]
+        driver.license_category = request.form["license_category"]
+        driver.license_expiry_date = request.form["license_expiry_date"]
+
+        db.session.commit()
+        flash("Driver updated.")
+        return redirect(url_for("drivers.list_drivers"))
+
+    return render_template("drivers/edit.html", driver=driver)
+
+
+@drivers_bp.route("/toggle/<int:driver_id>")
+@login_required
+@role_required(UserRole.MANAGER, UserRole.SAFETY_OFFICER)
+def toggle_driver_status(driver_id):
+    driver = Driver.query.get_or_404(driver_id)
+
+    if driver.status.value == "Suspended":
+        driver.status = DriverStatus.ON_DUTY
+    else:
+        driver.status = DriverStatus.SUSPENDED
+
+    db.session.commit()
+    flash("Driver status updated.")
+    return redirect(url_for("drivers.list_drivers"))
