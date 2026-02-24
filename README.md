@@ -4,6 +4,26 @@
 FleetFlow is a role-based fleet and logistics management system built using **Flask + SQLAlchemy + MySQL**.  
 It manages vehicles, drivers, trips, maintenance, expenses, and analytics in a modular and scalable architecture.
 
+## 🛠️ Tech Stack
+
+**Backend**
+- Python
+- Flask
+- Flask-Login
+- Flask-Migrate
+- SQLAlchemy
+
+**Database**
+- MySQL
+
+**Frontend**
+- HTML5
+- Bootstrap 5
+- Jinja2 Templates
+
+**Visualization**
+- Chart.js
+
 ## ✨ Features
 
 ### 🔐 Role-Based Access Control
