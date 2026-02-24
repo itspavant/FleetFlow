@@ -3,6 +3,45 @@
 
 <h2>Driver Performance & Safety</h2>
 
+<form method="GET" class="row g-3 mt-2 mb-3">
+
+    <div class="col-md-4">
+        <input type="text"
+               name="search"
+               class="form-control"
+               placeholder="Search by driver name"
+               value="{{ search }}">
+    </div>
+
+    <div class="col-md-4">
+        <select name="compliance" class="form-select">
+            <option value="all" {% if compliance == "all" %}selected{% endif %}>
+                All Compliance
+            </option>
+            <option value="compliant" {% if compliance == "compliant" %}selected{% endif %}>
+                Compliant
+            </option>
+            <option value="noncompliant" {% if compliance == "noncompliant" %}selected{% endif %}>
+                Non-Compliant
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+            Filter
+        </button>
+    </div>
+
+    <div class="col-md-2">
+        <a href="{{ url_for('performance.performance_dashboard') }}"
+           class="btn btn-secondary w-100">
+            Reset
+        </a>
+    </div>
+
+</form>
+
 <table class="table table-hover mt-3">
     <thead>
         <tr>

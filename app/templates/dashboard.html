@@ -3,36 +3,6 @@
 
 <h2 class="mb-4">Fleet Command Center</h2>
 
-<form method="GET" class="d-flex justify-content-between align-items-center mb-3">
-
-    <input type="text"
-           name="search"
-           value="{{ request.args.get('search', '') }}"
-           class="form-control w-50"
-           placeholder="Search trips, vehicles, drivers...">
-
-    <div class="d-flex">
-
-        <select name="status" class="form-select me-2">
-            <option value="">All Status</option>
-            <option value="DRAFT">Draft</option>
-            <option value="DISPATCHED">Dispatched</option>
-            <option value="COMPLETED">Completed</option>
-        </select>
-
-        <select name="sort" class="form-select me-2">
-            <option value="desc">Newest</option>
-            <option value="asc">Oldest</option>
-        </select>
-
-        <button class="btn btn-primary btn-sm">
-            Apply
-        </button>
-
-    </div>
-
-</form>
-
 <!-- Quick Actions -->
 <div class="mb-4">
     {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
@@ -92,6 +62,36 @@
     </div>
 
 </div>
+
+<form method="GET" class="d-flex justify-content-between align-items-center mb-3">
+
+    <input type="text"
+           name="search"
+           value="{{ request.args.get('search', '') }}"
+           class="form-control w-50"
+           placeholder="Search trips, vehicles, drivers...">
+
+    <div class="d-flex">
+
+        <select name="status" class="form-select me-2">
+            <option value="">All Status</option>
+            <option value="DRAFT">Draft</option>
+            <option value="DISPATCHED">Dispatched</option>
+            <option value="COMPLETED">Completed</option>
+        </select>
+
+        <select name="sort" class="form-select me-2">
+            <option value="desc">Newest</option>
+            <option value="asc">Oldest</option>
+        </select>
+
+        <button class="btn btn-primary btn-sm">
+            Apply
+        </button>
+
+    </div>
+
+</form>
 
 <!-- Recent Trips Table -->
 <div class="card shadow-sm">
