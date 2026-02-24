@@ -58,12 +58,14 @@
                     ₹ {{ row.fuel + row.misc }}
                 </strong>
             </td>
+            {% if current_user.role.name in ["MANAGER", "DISPATCHER"] %}
             <td>
             <a href="{{ url_for('expenses.add_misc_expense', trip_id=row.trip.id) }}"
             class="btn btn-sm btn-secondary">
                 + Misc
             </a>
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>
