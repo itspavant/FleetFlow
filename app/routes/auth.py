@@ -44,10 +44,12 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
+            flash("Login successful!", "success")
             login_user(user)
             return redirect(url_for("dashboard.home"))
-
-        flash("Invalid credentials")
+        else:
+            flash("Invalid email or password", "danger")
+            return redirect(url_for("auth.login")) 
 
     return render_template("login.html")
 
@@ -58,5 +60,5 @@ from flask import session
 @login_required
 def logout():
     logout_user()
-    session.pop('_flashes', None)   # Clear any old flash messages
+    flash("Logged out successfully", "info")
     return redirect(url_for("auth.login"))
